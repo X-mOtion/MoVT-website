@@ -80,7 +80,7 @@ let dataset = 'humanml3d', allMethods = false;
 const selectedMethods = new Set(['Real motion', 'MoMask', 'BAMM', 'ENERGYMOGEN', 'MotionGPT-2']);
 function renderTable() {
   const rows = benchmarks[dataset].filter(row => allMethods || row.ours || selectedMethods.has(row.name));
-  $('#benchmark-rows').innerHTML = rows.map(row => `<tr class="${row.ours ? 'ours' : row.name === 'Real motion' ? 'reference' : ''}"><th scope="row">${escapeHTML(row.name)}</th>${row.values.map(value => `<td>${value ? `${escapeHTML(value[0])}<span class="uncertainty"> ± ${escapeHTML(value[1])}</span>` : '—'}</td>`).join('')}</tr>`).join('');
+  $('#benchmark-rows').innerHTML = rows.map(row => `<tr class="${row.ours ? 'ours' : row.name === 'Real motion' ? 'reference' : ''}"><th scope="row">${escapeHTML(row.name)}</th>${row.values.map(value => `<td>${value ? escapeHTML(value[0]) : '—'}</td>`).join('')}</tr>`).join('');
   $('#benchmark-caption').textContent = `${dataset === 'humanml3d' ? 'HumanML3D' : 'KIT-ML'} · ${allMethods ? 'All' : 'Selected'} methods from Table 1`;
   $('#benchmark-panel').dataset.dataset = dataset;
   $('#benchmark-panel').setAttribute('aria-labelledby', `dataset-${dataset}`);
