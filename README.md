@@ -3,14 +3,29 @@
 **MoVT: Video-Augmented Motion Tokenizer for Text-to-Motion Generation**  
 **ACM MM 2026 · Oral**
 
+Project page: https://x-motion.github.io/MoVT-website/  
 Code release: https://github.com/X-mOtion/MoVT — Coming soon.
 
-## Publication status
+This repository contains the prebuilt public website in `docs/`. GitHub Pages
+publishes the `main` branch, `/docs` directory. The page includes the authors,
+affiliations, abstract, teaser, pipeline, paper-reported results, and the existing
+motion demonstrations. The main PDF is the supplied camera-ready paper.
 
-Repository preparation is in progress. Publication metadata and exclusion rules have been committed. The complete static website, including its images, motion data, videos and main paper PDF, has not yet been transferred. GitHub Pages is not yet enabled. This is not a completed deployment.
+The page's design and demonstrations are unchanged from the approved desktop
+version. The paper download and BibTeX use the publication-ready metadata.
 
-The approved website is published from the `main` branch, `/docs` directory once the complete reviewed payload is present. The intended site URL is https://x-motion.github.io/MoVT-website/.
+No original manuscript source archive, review documents, training code,
+model weights, or supplementary-material PDF is included in this repository.
+Only the inspected public files in the deployment allowlist may be uploaded.
 
-Only the files in the reviewed MoVT website payload may be uploaded. Do not upload original archives, supplementary materials, manuscript source files, model weights, credentials, or unrelated files. `.gitignore` is a precaution and is not a security boundary or a substitute for reviewing the upload.
+## Local preview
 
-The approved layout includes the authors and **ACM MM 2026 · Oral** below the title, the abstract, teaser, pipeline, paper-reported results and motion examples. Code release remains **Coming soon**.
+```bash
+python3 -m http.server 8000 --directory docs
+```
+
+Open `http://localhost:8000/` in a browser.
+
+## Attribution
+
+The motion viewer uses Three.js. See `THIRD_PARTY_NOTICES.txt`.

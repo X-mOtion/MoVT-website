@@ -1,0 +1,77 @@
+{
+  "fps": 20,
+  "samples": [
+    {
+      "id": "walk-wave",
+      "title": "Walk & wave",
+      "prompt": "A person walks forward while waving their right hand.",
+      "category": "Locomotion",
+      "frames": 96,
+      "seed": 27182,
+      "file": "motions/walk-wave.json",
+      "poster": "motions/walk-wave.png",
+      "video": "videos/walk-wave.mp4",
+      "videoPoster": "videos/walk-wave.jpg"
+    },
+    {
+      "id": "jumping-jacks",
+      "title": "Jumping jacks",
+      "prompt": "A person performs jumping jacks, jumping with their legs apart and raising both arms overhead.",
+      "category": "Full body",
+      "frames": 96,
+      "seed": 10107,
+      "file": "motions/jumping-jacks.json",
+      "poster": "motions/jumping-jacks.png",
+      "video": "videos/jumping-jacks.mp4",
+      "videoPoster": "videos/jumping-jacks.jpg"
+    },
+    {
+      "id": "boxing",
+      "title": "Shadow boxing",
+      "prompt": "A person is boxing, throwing alternating punches with their left and right fists.",
+      "category": "Upper body",
+      "frames": 96,
+      "seed": 27182,
+      "file": "motions/boxing.json",
+      "poster": "motions/boxing.png",
+      "video": "videos/boxing.mp4",
+      "videoPoster": "videos/boxing.jpg"
+    },
+    {
+      "id": "kick",
+      "title": "Forward kick",
+      "prompt": "A person kicks their right leg forward high into the air.",
+      "category": "Balance",
+      "frames": 96,
+      "seed": 10107,
+      "file": "motions/kick.json",
+      "poster": "motions/kick.png",
+      "video": "videos/kick.mp4",
+      "videoPoster": "videos/kick.jpg"
+    },
+    {
+      "id": "dance",
+      "title": "A little dance",
+      "prompt": "A person dances, stepping from side to side and moving their arms.",
+      "category": "Rhythm",
+      "frames": 96,
+      "seed": 10107,
+      "file": "motions/dance.json",
+      "poster": "motions/dance.png",
+      "video": "videos/dance.mp4",
+      "videoPoster": "videos/dance.jpg"
+    },
+    {
+      "id": "squat",
+      "title": "Bodyweight squat",
+      "prompt": "A person performs squats, bending both knees to lower their body and then standing up.",
+      "category": "Full body",
+      "frames": 96,
+      "seed": 10107,
+      "file": "motions/squat.json",
+      "poster": "motions/squat.png",
+      "video": "videos/squat.mp4",
+      "videoPoster": "videos/squat.jpg"
+    }
+  ]
+}

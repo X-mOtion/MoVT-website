@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#ffffff"/>
+<meta name="description" content="MoVT: Video-Augmented Motion Tokenizer for Text-to-Motion Generation. Abstract, teaser, pipeline, results, and interactive motion demos."/>
+<meta property="og:title" content="MoVT — Video-Augmented Motion Tokenizer"/>
+<meta property="og:description" content="Learning a richer vocabulary of human motion from video."/>
+<meta property="og:type" content="website"/>
+<meta property="og:image" content="./figures/teaser.webp"/>
+<title>MoVT | Video-Augmented Motion Tokenizer for Text-to-Motion Generation</title>
+<link rel="icon" type="image/svg+xml" href="./favicon.svg"/>
+<link rel="stylesheet" href="./assets/style.css"/>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<svg aria-hidden="true" class="icon-sprite" xmlns="http://www.w3.org/2000/svg">
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"></path></symbol>
+<symbol id="i-external" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"></path></symbol>
+<symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v13m-5-5 5 5 5-5M5 20h14"></path></symbol>
+<symbol id="i-paper" viewBox="0 0 24 24"><path d="M14 3H5v18h14V8l-5-5Zm0 0v5h5M8 12h8M8 16h6"></path></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="m9 5 10 7-10 7Z"></path></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"></path></symbol>
+<symbol id="i-reset" viewBox="0 0 24 24"><path d="M5 7a8 8 0 1 1-1 8M5 3v5h5"></path></symbol>
+<symbol id="i-orbit" viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="10" ry="5" transform="rotate(-35 12 12)"></ellipse><circle cx="12" cy="12" r="2"></circle></symbol>
+<symbol id="i-copy" viewBox="0 0 24 24"><rect height="13" rx="2" width="12" x="8" y="8"></rect><path d="M16 8V3H3v13h5"></path></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"></path></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"></path></symbol>
+<symbol id="i-zoom" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5M8 8l-5-5m13 5 5-5M8 16l-5 5m13-5 5 5"></path></symbol><symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"></path></symbol><symbol id="i-code" viewBox="0 0 24 24"><path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-16-2 20"></path></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></symbol></svg>
+<div class="page-shell">
+<header class="paper-header" id="top">
+  <h1><span class="title-line"><span class="title-accent">MoVT:</span> <span class="title-phrase">Video-Augmented</span></span> <span class="title-line">Motion Tokenizer for</span> <span class="title-line"><span class="title-phrase">Text-to-Motion</span> Generation</span></h1>
+  <div class="authors" id="author-list" aria-label="Paper authors" hidden></div>
+  <p class="affiliations" id="affiliations" hidden></p>
+  <p class="author-note" id="author-note" hidden></p>
+  <p class="venue" id="venue" hidden></p>
+  <p class="paper-subtitle">Learning a richer vocabulary of human motion from video.</p>
+  <div class="paper-links">
+    <a class="button button-primary" href="./paper.pdf" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-paper"></use></svg> Paper</a>
+    <a class="button button-outline" href="https://github.com/X-mOtion/MoVT" id="repository-link" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-code"></use></svg> Code <span class="code-status">· Coming soon</span></a>
+  </div>
+  <nav class="section-nav" aria-label="Page sections">
+    <a href="#overview">Overview</a><a href="#abstract">Abstract</a><a href="#teaser">Teaser</a><a href="#pipeline">Pipeline</a><a href="#results">Results</a><a href="#citation">Citation</a>
+  </nav>
+</header>
+<main id="main">
+<section class="paper-section overview" id="overview" aria-labelledby="overview-title">
+  <div class="section-heading">
+    <h2 id="overview-title">Overview</h2>
+    <div class="display-tabs" role="tablist" aria-label="Motion display mode">
+      <button type="button" id="view-film-tab" role="tab" aria-selected="true" aria-controls="film-panel" data-display="film">Video</button>
+      <button type="button" id="view-studio-tab" role="tab" aria-selected="false" tabindex="-1" aria-controls="studio-panel" data-display="studio">2D / 3D view</button>
+    </div>
+  </div>
+  <div class="demo-surface" id="demo-surface">
+    <div id="film-panel" role="tabpanel" aria-labelledby="view-film-tab">
+      <video id="motion-film" aria-label="3D character animation for the selected prompt" playsinline muted loop preload="metadata" poster="./renders/jumping-jacks.jpg" src="./renders/jumping-jacks.mp4" controls></video>
+      <div class="film-controls" hidden>
+        <button type="button" id="film-play" class="icon-button" aria-label="Play video" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-play"></use></svg></button>
+        <input id="film-timeline" type="range" min="0" max="4.8" step="0.01" value="0" aria-label="Video timeline"/>
+        <span id="film-time" class="time-label">0:00 / 0:05</span>
+      </div>
+    </div>
+    <div id="studio-panel" role="tabpanel" aria-labelledby="view-studio-tab" hidden>
+      <div aria-busy="false" class="motion-studio">
+ <div class="stage-layout">
+  <div class="three-stage">
+   <div class="stage-label">
+    <span class="dimension-badge">
+     3D
+    </span>
+    <span>
+     Spatial motion
+    </span>
+   </div>
+   <div aria-label="Interactive 3D motion. Drag to rotate the view." id="three-container">
+   </div>
+   <div class="stage-hint">
+    <svg aria-hidden="true" class="icon">
+     <use href="#i-orbit">
+     </use>
+    </svg>
+    <span>
+     Drag to explore
+    </span>
+   </div>
+   <div aria-label="3D camera view" class="view-switch" role="group">
+    <button aria-pressed="true" class="is-active" data-view="orbit" type="button">
+     Perspective
+    </button>
+    <button aria-pressed="false" data-view="front" type="button">
+     Front
+    </button>
+   </div>
+  </div>
+  <div aria-hidden="true" class="stage-connector">
+   <span>
+    ↔
+   </span>
+  </div>
+  <div class="two-stage">
+   <div class="stage-label">
+    <span class="dimension-badge dimension-2d">
+     2D
+    </span>
+    <span>
+     Aligned motion
+    </span>
+   </div>
+   <canvas aria-label="2D motion decoded using the same base token indices" id="two-canvas">
+   </canvas>
+   <div class="two-annotation">
+    Same base tokens
+   </div>
+  </div>
+  <div class="loading-overlay" id="motion-loading">
+   <span class="loading-ring">
+   </span>
+   <span>
+    Loading the interactive view…
+   </span>
+  </div>
+ </div>
+ <div class="transport">
+  <button aria-label="Pause animation" class="play-button" id="play-button" type="button">
+   <svg aria-hidden="true" class="icon">
+    <use href="#i-pause">
+    </use>
+   </svg>
+  </button>
+  <button aria-label="Restart animation" class="icon-button restart-button" id="restart-button" type="button">
+   <svg aria-hidden="true" class="icon">
+    <use href="#i-reset">
+    </use>
+   </svg>
+  </button>
+  <span class="time-label" id="time-label">
+   0.00 / 0.00
+  </span>
+  <input aria-label="Motion timeline" id="timeline" max="95" min="0" step="1" type="range" value="0"/>
+  <label class="speed-control">
+   <span class="sr-only">
+    Playback speed
+   </span>
+   <select id="speed-select">
+    <option value="0.5">
+     0.5×
+    </option>
+    <option selected="" value="1">
+     1×
+    </option>
+    <option value="1.5">
+     1.5×
+    </option>
+    <option value="2">
+     2×
+    </option>
+   </select>
+  </label>
+  <div class="mode-control">
+   <label class="sr-only" for="mode-select">
+    3D decoding mode
+   </label>
+   <select id="mode-select">
+    <option value="full">
+     Full 3D
+    </option>
+    <option value="base">
+     Base only
+    </option>
+   </select>
+  </div>
+ </div>
+ <div class="token-section">
+  <div class="token-label">
+   Shared base tokens
+  </div>
+  <div aria-label="Shared base token indices" class="token-strip" id="token-strip">
+  </div>
+  <span class="token-match">
+   <svg aria-hidden="true" class="icon">
+    <use href="#i-check">
+    </use>
+   </svg>
+   Aligned by index
+  </span>
+ </div>
+</div>
+
+      <div id="demo-error" class="error-message" role="alert" hidden></div>
+    </div>
+  </div>
+  <div class="prompt-caption">
+    <div class="prompt-meta"><span>Text prompt</span><span id="sample-counter">01 / 06</span></div>
+    <p id="active-prompt" aria-live="polite">“A person performs jumping jacks, jumping with their legs apart and raising both arms overhead.”</p>
+  </div>
+  <div class="sample-tabs" id="sample-tabs" role="group" aria-label="Choose a motion prompt"></div>
+  <details class="demo-note">
+    <summary>About these examples <svg class="icon" aria-hidden="true"><use href="#i-plus"></use></svg></summary>
+    <div class="detail-body">
+      <p>These curated outputs use the supplied 3D-trained text generator and aligned decoders. They are not a reproduction of the paper’s complete training or benchmark evaluation.</p>
+      <p>The video shows a retargeted 3D character. The interactive view decodes 2D and 3D motion from the same base-token indices using separate codebooks; its 2D motion is not a projection of the displayed character. Full 3D adds five residual layers.</p>
+      <div class="download-links"><a id="download-video" href="./videos/jumping-jacks.mp4" download>Download paired video <svg class="icon" aria-hidden="true"><use href="#i-down"></use></svg></a><a id="download-motion" href="./motions/jumping-jacks.json" download>Download motion JSON <svg class="icon" aria-hidden="true"><use href="#i-down"></use></svg></a></div>
+    </div>
+  </details>
+</section>
+<section class="paper-section" id="abstract" aria-labelledby="abstract-title">
+  <h2 id="abstract-title">Abstract</h2>
+  <div class="abstract-text"><p>Text-driven 3D human motion generation models face significant challenges in responding to diverse and unconstrained textual prompts, primarily due to the limited availability of 3D motion training data. To address this, we introduce MoVT, a novel framework that effectively leverages the extensive range of human action videos to enhance text-to-motion generation. </p>
+<p>At the core of our approach is the cross-modal augmented motion tokenizer, which projects discrete 3D motion tokens into the 2D domain. This projection allows us to enrich the motion codebook with complex, real-world motion patterns derived from videos. The enriched discrete tokens are then mapped back to the 3D domain, resulting in aligned 3D and 2D codebooks with an enhanced capacity to represent intricate motions. </p>
+<p>These enhanced codebooks are integrated into a generative masked transformer, which predicts masked motion token indices in a modality-agnostic manner. This enables the use of text-index pairs, generated from the 2D codebook and annotated motion videos, to further enhance the generator. Extensive empirical evaluations show that MoVT performs favorably against prior state-of-the-art methods across multiple key metrics.</p></div>
+</section>
+<section class="paper-section" id="teaser" aria-labelledby="teaser-title">
+  <h2 id="teaser-title">Teaser</h2>
+  <figure class="research-figure">
+      <button type="button" class="figure-image" data-figure="teaser" data-title="MoVT teaser" aria-label="Enlarge MoVT teaser">
+        <img src="./figures/teaser.webp" width="3000" height="1725" alt="MoVT aligns 2D and 3D codebooks in a shared code space, with complex motion examples from the manuscript." loading="lazy"/>
+      </button>
+      <figcaption><p><strong>Learning motion from video.</strong> Video-derived motion patterns enrich a shared token space, extending the vocabulary available for 3D motion generation.</p><button type="button" class="text-button enlarge-link" data-open-figure="teaser"><svg class="icon" aria-hidden="true"><use href="#i-zoom"></use></svg> Enlarge figure</button></figcaption>
+    </figure>
+</section>
+<section class="paper-section" id="pipeline" aria-labelledby="pipeline-title">
+  <h2 id="pipeline-title">Pipeline</h2>
+  <figure class="research-figure">
+      <button type="button" class="figure-image" data-figure="pipeline" data-title="MoVT pipeline" aria-label="Enlarge MoVT pipeline">
+        <img src="./figures/pipeline.webp" width="3000" height="1097" alt="The five-stage MoVT pipeline: 3D tokenization, cross-modal alignment, video augmentation, transfer to 3D, and text-conditioned generation." loading="lazy"/>
+      </button>
+      <figcaption><p><strong>A five-stage framework.</strong> Align the 3D and 2D codebooks, add video-derived motion patterns, and transfer the expanded vocabulary back to 3D.</p><button type="button" class="text-button enlarge-link" data-open-figure="pipeline"><svg class="icon" aria-hidden="true"><use href="#i-zoom"></use></svg> Enlarge figure</button></figcaption>
+    </figure>
+  <div class="method-walkthrough">
+    <h3>How it works</h3>
+    <div class="stage-tabs" role="tablist" aria-label="Pipeline stages">
+      <button type="button" id="step-0" data-stage="0" role="tab" aria-controls="stage-panel" aria-selected="true">1. Tokenize</button>
+      <button type="button" id="step-1" data-stage="1" role="tab" aria-controls="stage-panel" aria-selected="false" tabindex="-1">2. Align</button>
+      <button type="button" id="step-2" data-stage="2" role="tab" aria-controls="stage-panel" aria-selected="false" tabindex="-1">3. Augment</button>
+      <button type="button" id="step-3" data-stage="3" role="tab" aria-controls="stage-panel" aria-selected="false" tabindex="-1">4. Transfer</button>
+      <button type="button" id="step-4" data-stage="4" role="tab" aria-controls="stage-panel" aria-selected="false" tabindex="-1">5. Generate</button>
+    </div>
+    <div id="stage-panel" class="stage-panel" role="tabpanel" aria-labelledby="step-0" data-stage="0">
+      <h4 id="stage-title">3D motion tokenization</h4>
+      <p id="stage-description">A residual VQ-VAE learns discrete motion tokens from 3D sequences. The base codebook represents primary motion structure; residual layers recover additional detail.</p>
+      <div class="stage-equation"><span id="stage-formula">M<sup>3D</sup> → E<sup>3D</sup> → C<sup>3D</sup></span><span id="stage-note">Base structure + residual detail</span></div>
+    </div>
+  </div>
+</section>
+<section class="paper-section" id="results" aria-labelledby="results-title">
+  <h2 id="results-title">Results</h2>
+  <p class="section-intro">Quantitative evaluation on HumanML3D and KIT-ML, followed by qualitative comparisons from the paper.</p>
+  <div class="results-controls">
+    <div class="dataset-tabs" role="tablist" aria-label="Benchmark dataset">
+      <button type="button" id="dataset-humanml3d" role="tab" aria-controls="benchmark-panel" aria-selected="true" data-dataset="humanml3d">HumanML3D</button>
+      <button type="button" id="dataset-kitml" role="tab" aria-controls="benchmark-panel" aria-selected="false" data-dataset="kitml" tabindex="-1">KIT-ML</button>
+    </div>
+    <button type="button" class="text-button" id="toggle-methods" aria-expanded="false">Show all methods <svg class="icon" aria-hidden="true"><use href="#i-plus"></use></svg></button>
+  </div>
+  <div id="benchmark-panel" role="tabpanel" aria-labelledby="dataset-humanml3d" data-dataset="humanml3d">
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Benchmark table. Scroll horizontally to see all metrics.">
+      <table>
+        <caption id="benchmark-caption">HumanML3D · Selected methods from Table 1</caption>
+        <thead><tr><th scope="col">Method</th><th scope="col">R-Precision ↑<span>Top 3</span></th><th scope="col">FID ↓</th><th scope="col">MM Dist. ↓</th><th scope="col">Diversity →</th><th scope="col">MModality ↑</th></tr></thead>
+        <tbody id="benchmark-rows"><tr class="reference"><th scope="row">Real motion</th><td>0.797<span class="uncertainty"> ± 0.002</span></td><td>0.002<span class="uncertainty"> ± 0.000</span></td><td>2.974<span class="uncertainty"> ± 0.008</span></td><td>9.503<span class="uncertainty"> ± 0.065</span></td><td>—</td></tr><tr class=""><th scope="row">MoMask</th><td>0.807<span class="uncertainty"> ± 0.002</span></td><td>0.045<span class="uncertainty"> ± 0.002</span></td><td>2.958<span class="uncertainty"> ± 0.008</span></td><td>—</td><td>1.241<span class="uncertainty"> ± 0.040</span></td></tr><tr class=""><th scope="row">MotionGPT-2</th><td>0.782<span class="uncertainty"> ± 0.004</span></td><td>0.191<span class="uncertainty"> ± 0.004</span></td><td>3.080<span class="uncertainty"> ± 0.013</span></td><td>9.860<span class="uncertainty"> ± 0.026</span></td><td>2.137<span class="uncertainty"> ± 0.022</span></td></tr><tr class=""><th scope="row">ENERGYMOGEN</th><td>0.815<span class="uncertainty"> ± 0.002</span></td><td>0.188<span class="uncertainty"> ± 0.006</span></td><td>2.915<span class="uncertainty"> ± 0.007</span></td><td>9.488<span class="uncertainty"> ± 0.099</span></td><td>2.205<span class="uncertainty"> ± 0.041</span></td></tr><tr class=""><th scope="row">BAMM</th><td>0.814<span class="uncertainty"> ± 0.003</span></td><td>0.055<span class="uncertainty"> ± 0.002</span></td><td>2.919<span class="uncertainty"> ± 0.008</span></td><td>9.717<span class="uncertainty"> ± 0.089</span></td><td>1.687<span class="uncertainty"> ± 0.051</span></td></tr><tr class="ours"><th scope="row">MoVT (n = 512)</th><td>0.811<span class="uncertainty"> ± 0.004</span></td><td>0.040<span class="uncertainty"> ± 0.003</span></td><td>2.952<span class="uncertainty"> ± 0.004</span></td><td>9.862<span class="uncertainty"> ± 0.003</span></td><td>1.652<span class="uncertainty"> ± 0.042</span></td></tr><tr class="ours"><th scope="row">MoVT (n = 1024)</th><td>0.814<span class="uncertainty"> ± 0.004</span></td><td>0.032<span class="uncertainty"> ± 0.003</span></td><td>2.947<span class="uncertainty"> ± 0.004</span></td><td>9.960<span class="uncertainty"> ± 0.003</span></td><td>1.392<span class="uncertainty"> ± 0.042</span></td></tr></tbody>
+      </table>
+    </div>
+    <p class="table-footnote">Values and ± terms are reported in Table 1. § uses ground-truth motion length. These benchmarks do not evaluate the interactive examples. <a href="./paper.pdf#page=5" target="_blank" rel="noopener">Full table <svg class="icon" aria-hidden="true"><use href="#i-external"></use></svg></a></p>
+    <p class="scroll-hint">Scroll the table sideways to see all metrics →</p>
+  </div>
+  <div class="qualitative">
+    <h3>Qualitative comparisons</h3>
+    <div class="comparison-tabs" role="tablist" aria-label="Qualitative results">
+      <button id="comparison-tab-qualitative" type="button" role="tab" aria-controls="comparison-qualitative" aria-selected="true" data-comparison="qualitative">Generation</button>
+      <button id="comparison-tab-reconstruction" type="button" role="tab" aria-controls="comparison-reconstruction" aria-selected="false" tabindex="-1" data-comparison="reconstruction">Reconstruction</button>
+      <button id="comparison-tab-codebook" type="button" role="tab" aria-controls="comparison-codebook" aria-selected="false" tabindex="-1" data-comparison="codebook">Codebooks</button>
+    </div>
+    <div id="comparison-qualitative" role="tabpanel" aria-labelledby="comparison-tab-qualitative"><figure class="research-figure">
+      <button type="button" class="figure-image" data-figure="qualitative" data-title="Text-to-motion comparison" aria-label="Enlarge Text-to-motion comparison">
+        <img src="./figures/qualitative.webp" width="3000" height="1380" alt="Qualitative comparison of MoVT with BAMM, MotionLCM, and MoMask on HumanML3D." loading="lazy"/>
+      </button>
+      <figcaption><p>Text-to-motion examples from the manuscript, comparing MoVT with BAMM, MotionLCM, and MoMask. These paper figures are separate from the interactive examples above.</p><button type="button" class="text-button enlarge-link" data-open-figure="qualitative"><svg class="icon" aria-hidden="true"><use href="#i-zoom"></use></svg> Enlarge figure</button></figcaption>
+    </figure></div>
+    <div id="comparison-reconstruction" role="tabpanel" aria-labelledby="comparison-tab-reconstruction" hidden><figure class="research-figure">
+      <button type="button" class="figure-image" data-figure="reconstruction" data-title="Motion reconstruction" aria-label="Enlarge Motion reconstruction">
+        <img src="./figures/reconstruction.webp" width="3000" height="1047" alt="Original and video-augmented residual VQ-VAE reconstructions from the manuscript." loading="lazy"/>
+      </button>
+      <figcaption><p>Motion reconstruction with the original and video-augmented residual VQ-VAE.</p><button type="button" class="text-button enlarge-link" data-open-figure="reconstruction"><svg class="icon" aria-hidden="true"><use href="#i-zoom"></use></svg> Enlarge figure</button></figcaption>
+    </figure></div>
+    <div id="comparison-codebook" role="tabpanel" aria-labelledby="comparison-tab-codebook" hidden><figure class="research-figure">
+      <button type="button" class="figure-image" data-figure="codebook" data-title="Codebook comparison" aria-label="Enlarge Codebook comparison">
+        <img src="./figures/codebook.webp" width="3000" height="2060" alt="Motion patterns from the original and augmented 3D codebooks." loading="lazy"/>
+      </button>
+      <figcaption><p>Representative motion patterns in the original and augmented 3D codebooks.</p><button type="button" class="text-button enlarge-link" data-open-figure="codebook"><svg class="icon" aria-hidden="true"><use href="#i-zoom"></use></svg> Enlarge figure</button></figcaption>
+    </figure><figure class="research-figure">
+      <button type="button" class="figure-image" data-figure="distribution" data-title="Codebook distributions" aria-label="Enlarge Codebook distributions">
+        <img src="./figures/distribution.webp" width="3000" height="1694" alt="PCA visualization of the learned codebook distributions." loading="lazy"/>
+      </button>
+      <figcaption><p>PCA visualization of the codebook distributions. This is a latent-space visualization, not an additional generation benchmark.</p><button type="button" class="text-button enlarge-link" data-open-figure="distribution"><svg class="icon" aria-hidden="true"><use href="#i-zoom"></use></svg> Enlarge figure</button></figcaption>
+    </figure></div>
+  </div>
+</section>
+<section class="paper-section" id="citation" aria-labelledby="citation-title">
+  <div class="section-heading"><h2 id="citation-title">Citation</h2><button type="button" class="text-button" id="copy-citation"><svg class="icon" aria-hidden="true"><use href="#i-copy"></use></svg> Copy BibTeX</button></div>
+  <p class="citation-note" id="citation-note">ACM Multimedia 2026. Bibliographic details from the camera-ready paper.</p>
+  <pre class="citation-code"><code id="bibtex">@inproceedings{jing2026movt,
+  author = {Jing, Beibei and Guo, Tianle and Zhang, Youjia and Song, Zikai
+            and Luo, Yawei and Yu, Junqing and Guan, Tao and Yang, Wei},
+  title = {{MoVT}: Video-Augmented Motion Tokenizer for Text-to-Motion Generation},
+  booktitle = {Proceedings of the 34th ACM International Conference on Multimedia},
+  year = {2026},
+  series = {MM '26},
+  numpages = {10},
+  doi = {10.1145/3767308.3834990},
+  publisher = {Association for Computing Machinery}
+}</code></pre>
+  <details class="demo-note limitations"><summary>Scope and limitations <svg class="icon" aria-hidden="true"><use href="#i-plus"></use></svg></summary><div class="detail-body"><p>The manuscript focuses on single-person motion. It does not model environmental context or multi-person interactions, and extreme or uncommon prompts can remain challenging. Shared token indices align representations but do not guarantee exact geometric agreement between the decoded 2D and 3D motions.</p></div></details>
+</section>
+</main>
+<footer><p><strong>MoVT</strong> · Video-Augmented Motion Tokenizer</p><a href="#top">Back to top ↑</a></footer>
+</div>
+<dialog id="figure-dialog" aria-labelledby="dialog-title">
+  <div class="dialog-toolbar"><h2 id="dialog-title">Research figure</h2><div><button type="button" class="button button-outline" id="toggle-zoom">Actual size</button><a id="dialog-pdf" class="button button-outline" target="_blank" rel="noopener">Original PDF <svg class="icon" aria-hidden="true"><use href="#i-external"></use></svg></a><button type="button" id="close-figure" class="icon-button" aria-label="Close figure"><svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg></button></div></div>
+  <div id="dialog-image-area"><img id="dialog-image" alt=""/></div><p class="dialog-hint">Use “Actual size” to read the original figure labels. Press Esc to close.</p>
+</dialog>
+<div class="toast" id="toast" role="status" hidden></div>
+<noscript><div class="noscript-note">The paper, figures and video are available without JavaScript. Enable JavaScript for the interactive views and dataset controls.</div></noscript>
+<script type="module" src="./assets/main.js"></script>
+</body>
+</html>
