@@ -9,10 +9,10 @@ Code release: https://github.com/X-mOtion/MoVT — Coming soon.
 This repository contains the prebuilt public website in `docs/`. GitHub Pages
 publishes the `main` branch, `/docs` directory. The page includes the authors,
 affiliations, abstract, teaser, pipeline, paper-reported results, and the existing
-motion demonstrations. The main PDF is the supplied camera-ready paper.
+motion demonstrations. The paper link points to the arXiv record (arXiv:2609.14965).
 
 The page's design and demonstrations are unchanged from the approved desktop
-version. The paper download and BibTeX use the publication-ready metadata.
+version. The paper link and BibTeX use the publication-ready metadata.
 
 No original manuscript source archive, review documents, training code,
 model weights, or supplementary-material PDF is included in this repository.
